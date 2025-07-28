@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    ports:
+      - "${CACHE_PORT}:${CACHE_PORT}"
+    environment:
+      - CACHE_PASSWORD=${CACHE_PASSWORD}  # Use the REDIS_PASSWORD from .env
+    volumes:
+      - redis-data:/data  # Persistent data storage
+    command: ["redis-server", "--requirepass", "${CACHE_PASSWORD}"]  # Use the password for Redis
+    restart: always  # Restart the container if it stops
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    ports:
+      - "5432:5432"  # Exposes PostgreSQL on port 5432
+    environment:
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}  # Use the POSTGRES_USER from .env
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Use the POSTGRES_PASSWORD from .env
+      - POSTGRES_DB=${POSTGRES_DB}  # Use the POSTGRES_DB from .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Persistent data storage
+    restart: always  # Restart the container if it stops
+
+volumes:
+  redis-data:  # Volume for persisting Redis data
+  postgres-data:  # Volume for persisting PostgreSQL data
