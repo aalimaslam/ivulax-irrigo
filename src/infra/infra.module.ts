@@ -4,7 +4,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { v4 as uuidV4 } from 'uuid';
 import { DatabaseModule } from './database/database.module';
-import { RedisCacheModule } from './cache/cache.module';
+// import { RedisCacheModule } from './cache/cache.module';
 
 @Global()
 @Module({
@@ -40,7 +40,7 @@ import { RedisCacheModule } from './cache/cache.module';
         };
       },
     }),
-    RedisCacheModule,
+    // RedisCacheModule,
   ],
   providers: [],
   exports: [MulterModule],

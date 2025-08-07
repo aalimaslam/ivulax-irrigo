@@ -13,6 +13,13 @@ import { CacheService } from './cache.service';
       useFactory: async (configService: ConfigService) => {
         const host = configService.get('cache.cacheHost');
         const port = configService.get('cache.cachePort');
+              // If Redis is not configured, use in-memory cache
+        if (!host || !port) {
+          return {
+            store: 'memory',
+            ttl: 5000, // default TTL
+          };
+        }
         const ttl = parseInt(configService.get('cache.cacheTTL'), 10) || 12000;
         const username = configService.get('cache.cacheUsername');
         const password = configService.get('cache.cachePassword');
@@ -41,5 +48,6 @@ import { CacheService } from './cache.service';
   ],
   controllers: [CacheController],
   providers: [CacheService],
+  exports: [CacheModule],
 })
 export class RedisCacheModule {}
