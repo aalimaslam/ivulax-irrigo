@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { UserRole } from '../users/user.entity';
 import * as crypto from 'crypto';
+import { RegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +11,42 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  async register(registerUserDto: RegisterUserDto) {
+    const existingUser = await this.usersService.findByEmail(registerUserDto.email);
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+    const user = await this.usersService.create({
+      ...registerUserDto,
+      role: UserRole.FARMER,
+    });
+    // remove password from result
+    const { password, ...result } = user;
+    return result;
+  }
+
+  async login(email: string, password) {
+    const user = await this.usersService.validateUser(email, password);
+    if (!user) {
+      throw new Error('Invalid credentials');
+    }
+
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    };
+  }
 
   // Update sendOtp to accept deviceUrl
   async sendOtp(phone: string, deviceUrl: string) {
