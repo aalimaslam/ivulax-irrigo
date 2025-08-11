@@ -30,9 +30,22 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async createUserWithEmailPassword(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
+  }
+
+  async findOrCreateUserByPhone(phone: string, deviceUrl: string): Promise<User> {
+    let user = await this.findByPhone(phone);
+    if (!user) {
+      user = this.usersRepository.create({
+        phone,
+        deviceUrl,
+        role: UserRole.FARMER,
+      });
+      await this.usersRepository.save(user);
+    }
+    return user;
   }
 
   async findAll(): Promise<User[]> {
@@ -86,7 +99,7 @@ export class UsersService {
   async seedAdmin(email: string, password: string): Promise<void> {
     const adminExists = await this.findByEmail(email);
     if (!adminExists) {
-      await this.create({
+      await this.createUserWithEmailPassword({
         email,
         password,
         role: UserRole.ADMIN,

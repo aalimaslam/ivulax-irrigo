@@ -5,7 +5,7 @@ import { Transaction, TransactionStatus } from '../transactions/transaction.enti
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { UserSubscriptionsService } from '../user-subscriptions/user-subscriptions.service';
 import { ConfigService } from '@nestjs/config';
-import * as Razorpay from 'razorpay';
+import Razorpay from 'razorpay';
 import * as crypto from 'crypto';
 
 @Injectable()

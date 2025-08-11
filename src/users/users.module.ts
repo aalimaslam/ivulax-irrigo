@@ -9,7 +9,7 @@ import { UserSubscriptionsModule } from '../user-subscriptions/user-subscription
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    AuthModule,
+    forwardRef(() => AuthModule),
     forwardRef(() => UserSubscriptionsModule),
   ],
   providers: [UsersService],

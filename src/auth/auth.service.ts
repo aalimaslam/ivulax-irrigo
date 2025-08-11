@@ -17,7 +17,7 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
-    const user = await this.usersService.create({
+    const user = await this.usersService.createUserWithEmailPassword({
       ...registerUserDto,
       role: UserRole.FARMER,
     });
@@ -53,23 +53,8 @@ export class AuthService {
     const otp = crypto.randomInt(1000, 9999).toString();
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
 
-    let user = await this.usersService.findByPhone(phone);
-    
-    if (!user) {
-      user = await this.usersService.create({
-        phone,
-        deviceUrl,
-        otp,
-        otpExpiry,
-        role: UserRole.FARMER,
-      });
-    } else {
-      user = await this.usersService.updateOtp(user.id, otp, otpExpiry);
-      if (deviceUrl) {
-        user.deviceUrl = deviceUrl;
-        await this.usersService.create(user);
-      }
-    }
+    const user = await this.usersService.findOrCreateUserByPhone(phone, deviceUrl);
+    await this.usersService.updateOtp(user.id, otp, otpExpiry);
 
     console.log(`OTP for ${phone}: ${otp}`);
     return { message: 'OTP sent successfully' };
