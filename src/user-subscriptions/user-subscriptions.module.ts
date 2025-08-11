@@ -9,7 +9,7 @@ import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
   imports: [
     TypeOrmModule.forFeature([UserSubscription]),
     forwardRef(() => UsersModule),
-    SubscriptionsModule,
+    forwardRef(() => SubscriptionsModule),
   ],
   providers: [UserSubscriptionsService],
   exports: [UserSubscriptionsService],

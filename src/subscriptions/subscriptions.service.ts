@@ -13,7 +13,9 @@ export class SubscriptionsService {
   ) {}
 
   create(createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
-    const subscription = this.subscriptionsRepository.create(createSubscriptionDto);
+    const subscription = this.subscriptionsRepository.create(
+      createSubscriptionDto,
+    );
     return this.subscriptionsRepository.save(subscription);
   }
 
@@ -25,7 +27,10 @@ export class SubscriptionsService {
     return this.subscriptionsRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateSubscriptionDto: UpdateSubscriptionDto): Promise<Subscription> {
+  async update(
+    id: string,
+    updateSubscriptionDto: UpdateSubscriptionDto,
+  ): Promise<Subscription> {
     await this.subscriptionsRepository.update(id, updateSubscriptionDto);
     return this.findOne(id);
   }
