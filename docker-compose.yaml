@@ -19,9 +19,9 @@ services:
     ports:
       - "5432:5432"  # Exposes PostgreSQL on port 5432
     environment:
-      - POSTGRES_USERNAME=${POSTGRES_USERNAME}  # Use the POSTGRES_USER from .env
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Use the POSTGRES_PASSWORD from .env
-      - POSTGRES_DB=${POSTGRES_DB}  # Use the POSTGRES_DB from .env
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=defaultdb
     volumes:
       - postgres-data:/var/lib/postgresql/data  # Persistent data storage
     restart: always  # Restart the container if it stops
