@@ -1,7 +1,14 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Transaction, TransactionStatus } from '../transactions/transaction.entity';
+import {
+  Transaction,
+  TransactionStatus,
+} from '../transactions/transaction.entity';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { UserSubscriptionsService } from '../user-subscriptions/user-subscriptions.service';
 import { ConfigService } from '@nestjs/config';
@@ -26,7 +33,8 @@ export class PaymentsService {
   }
 
   async createOrder(subscriptionId: string, userId: number) {
-    const subscription = await this.subscriptionsService.findOne(subscriptionId);
+    const subscription =
+      await this.subscriptionsService.findOne(subscriptionId);
     if (!subscription) {
       throw new NotFoundException('Subscription not found');
     }

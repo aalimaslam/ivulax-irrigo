@@ -8,9 +8,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
-      type: this.configService.get<any>('DATABASE_TYPE'),
-      host: this.configService.get<string>('POSTGRES_HOST'),
-      port: this.configService.get<number>('POSTGRES_PORT'),
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
       username: 'postgres',
       password: 'postgres',
       database: 'defaultdb',
