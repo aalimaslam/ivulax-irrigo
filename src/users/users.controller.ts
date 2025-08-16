@@ -8,10 +8,11 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -20,12 +21,13 @@ import {
 } from '@nestjs/swagger';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { FarmerGuard } from '../auth/guards/farmer.guard';
 import { UserSubscriptionsService } from '../user-subscriptions/user-subscriptions.service';
 import { AssignSubscriptionDto } from './dto/assign-subscription.dto';
+import { RequestWithUser } from '../core/types/request-with-user.type';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, AdminGuard)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -33,13 +35,10 @@ export class UsersController {
     private readonly userSubscriptionsService: UserSubscriptionsService,
   ) {}
 
+  // Admin-only endpoints
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Post(':id/assign-subscription')
   @ApiOperation({ summary: 'Assign a subscription to a user' })
-  @ApiResponse({
-    status: 201,
-    description: 'The subscription has been successfully assigned.',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
   assignSubscription(
     @Param('id', ParseIntPipe) id: number,
     @Body() assignSubscriptionDto: AssignSubscriptionDto,
@@ -50,53 +49,41 @@ export class UsersController {
     );
   }
 
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiResponse({
-    status: 201,
-    description: 'The user has been successfully created.',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUserWithEmailPassword(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Get()
   @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({ status: 200, description: 'Return all users.' })
   findAll() {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by id' })
-  @ApiResponse({ status: 200, description: 'Return the user.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOneById(id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update a user' })
-  @ApiResponse({
-    status: 200,
-    description: 'The user has been successfully updated.',
-  })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+  // Farmer profile update endpoint
+  @UseGuards(JwtAuthGuard, FarmerGuard)
+  @Patch('profile')
+  @ApiOperation({ summary: 'Update farmer profile' })
+  async updateProfile(
+    @Req() req: RequestWithUser,
+    @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(req.user.id, updateProfileDto);
   }
 
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
-  @ApiResponse({
-    status: 200,
-    description: 'The user has been successfully deleted.',
-  })
-  @ApiResponse({ status: 404, description: 'User not found.' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
