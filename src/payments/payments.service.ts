@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction, TransactionStatus } from '../transactions/transaction.entity';
@@ -26,20 +26,32 @@ export class PaymentsService {
   }
 
   async createOrder(subscriptionId: string, userId: number) {
+
     const subscription = await this.subscriptionsService.findOne(subscriptionId);
     if (!subscription) {
       throw new NotFoundException('Subscription not found');
     }
 
+
+        const hasActive = await this.userSubscriptionsService.hasActiveSubscription(userId);
+if (hasActive) {
+  throw new ConflictException('User already has an active subscription');
+}
+
     const orderOptions = {
-      amount: subscription.price * 100, // amount in the smallest currency unit
+      amount: subscription.price * 100, 
       currency: 'INR',
-      receipt: `receipt_order_${new Date().getTime()}`,
+       receipt: `${userId}_${Date.now()}`,
     };
+
 
     try {
       const order = await this.razorpay.orders.create(orderOptions);
-
+      console.log(`Order created: ${order.id}`);
+      if (!order || !order.id) {
+        throw new InternalServerErrorException('Failed to create order');
+      }
+      // Create a transaction record
       const transaction = this.transactionsRepository.create({
         userId,
         subscriptionId,
@@ -53,9 +65,12 @@ export class PaymentsService {
 
       return { ...order, subscription };
     } catch (error) {
+      console.error('Error creating order:', error);
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  
 
   async verifyPayment(
     razorpayOrderId: string,

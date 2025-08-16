@@ -70,6 +70,12 @@ export class UsersController {
     return this.usersService.findOneById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+@Get(':id/subscriptions')
+getUserSubscriptions(@Param('id', ParseIntPipe) id: number) {
+  return this.userSubscriptionsService.getUserSubscriptions(id);
+}
+
   // Farmer profile update endpoint
   @UseGuards(JwtAuthGuard, FarmerGuard)
   @Patch('profile')

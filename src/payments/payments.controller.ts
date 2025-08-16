@@ -23,12 +23,15 @@ export class PaymentsController {
     status: 201,
     description: 'The order has been successfully created.',
   })
+
   createOrder(@Body() createOrderDto: CreateOrderDto, @Req() req) {
     return this.paymentsService.createOrder(
       createOrderDto.subscriptionId,
-      req.user.sub,
+      req.user.userId,
     );
   }
+
+
 
   @Post('verify')
   @ApiOperation({ summary: 'Verify a Razorpay payment' })

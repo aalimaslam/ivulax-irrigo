@@ -53,7 +53,7 @@ export class AuthService {
       role: user.role,
       deviceUrl: user.deviceUrl,
     };
-    
+    console.log('JWT Payload being signed:', payload);
     return {
       access_token: this.jwtService.sign(payload),
       user: {

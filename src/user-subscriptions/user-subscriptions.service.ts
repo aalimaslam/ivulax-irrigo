@@ -32,6 +32,12 @@ export class UserSubscriptionsService {
 
     return this.userSubscriptionsRepository.save(userSubscription);
   }
+  async getUserSubscriptions(userId: number): Promise<UserSubscription[]> {
+  return this.userSubscriptionsRepository.find({
+    where: { userId },
+    relations: ['subscription']
+  });
+}
 
   async hasActiveSubscription(userId: number): Promise<boolean> {
     const userSubscriptions = await this.userSubscriptionsRepository.find({
