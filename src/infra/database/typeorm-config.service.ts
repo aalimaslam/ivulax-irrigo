@@ -2,21 +2,38 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 
-@Injectable()
-export class TypeOrmConfigService implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
-
-  createTypeOrmOptions(): TypeOrmModuleOptions {
-    return {
-      type: this.configService.get<any>('DATABASE_TYPE'),
-      host: this.configService.get<string>('POSTGRES_HOST'),
-      port: this.configService.get<number>('POSTGRES_PORT'),
-      username: 'postgres',
-      password: 'postgres',
-      database: 'defaultdb',
-      entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-      synchronize: true, // Should be false in production
-      logging: true,
-    } as TypeOrmModuleOptions;
-  }
-}
+export const AppDataSource = new DataSource({
+  type: process.env.DATABASE_TYPE,
+  url: process.env.DATABASE_URL,
+  host: process.env.POSTGRES_HOST,
+  port: Number(process.env.POSTGRES_PORT) || 5432,
+  username: process.env.POSTGRES_USERNAME ?? 'postgres',
+  password: process.env.POSTGRES_PASSWORD ?? 'postgres',
+  database: process.env.POSTGRES_DB ?? 'defaultdb',
+  synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
+  dropSchema: false,
+  keepConnectionAlive: true,
+  logging: true,
+  autoLoadEntities: true,
+  poolSize: Number(process.env.DATABASE_POOL_SIZE),
+  entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+  cli: {
+    entitiesDir: '../',
+    migrationsDir: 'src/infra/database/migrations/',
+    subscribersDir: 'subscriber',
+  },
+  extra: {
+    max: Number(process.env.DATABASE_MAX_CONNECTIONS) || 100,
+    ssl:
+      process.env.DATABASE_SSL_ENABLED === 'true'
+        ? {
+            rejectUnauthorized:
+              process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
+            ca: process.env.DATABASE_CA ?? undefined,
+            key: process.env.DATABASE_KEY ?? undefined,
+            cert: process.env.DATABASE_CERT ?? undefined,
+          }
+        : undefined,
+  },
+} as DataSourceOptions);
