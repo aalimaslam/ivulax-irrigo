@@ -53,7 +53,7 @@ export class AuthService {
       role: user.role,
       deviceUrl: user.deviceUrl,
     };
-    
+    console.log('JWT Payload being signed:', payload);
     return {
       access_token: this.jwtService.sign(payload),
       user: {
@@ -65,13 +65,15 @@ export class AuthService {
     };
   }
 
-  // Add the missing adminLogin method
+
   async adminLogin(email: string, password: string) {
+    //  console.log(`Attempting admin login for: ${email}`);
     const user = await this.usersService.validateAdmin(email, password);
     if (!user) {
+        console.log('Login failed - invalid credentials');
       throw new Error('Invalid credentials');
     }
-
+  // console.log('Login successful for admin:', email);
     const payload = { 
       email: user.email, 
       sub: user.id, 

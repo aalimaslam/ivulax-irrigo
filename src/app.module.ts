@@ -5,7 +5,11 @@ import { CoreModule } from './core/core.module';
 import { InfraModule } from './infra/infra.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config'; 
+import { ConfigModule } from '@nestjs/config';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { UserSubscriptionsModule } from './user-subscriptions/user-subscriptions.module';
+import { PaymentsModule } from './payments/payments.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 // @Module({
 //   imports: [CoreModule, InfraModule, AuthModule, UsersModule],
@@ -20,10 +24,14 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    CoreModule, 
-    InfraModule, 
-    AuthModule, 
-    UsersModule
+    CoreModule,
+    InfraModule,
+    AuthModule,
+    UsersModule,
+    SubscriptionsModule,
+    UserSubscriptionsModule,
+    PaymentsModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

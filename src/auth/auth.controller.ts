@@ -23,10 +23,20 @@ export class AuthController {
     return this.authService.verifyOtp(phone, otp);
   }
 
+  // @Post('admin/login')
+  // @ApiOperation({ summary: 'Admin login with email/password' })
+  // @ApiResponse({ status: 200, description: 'Admin logged in successfully' })
+  // async adminLogin(@Body() { email, password }: AdminLoginDto) {
+  //   return this.authService.adminLogin(email, password);
+  // }
   @Post('admin/login')
-  @ApiOperation({ summary: 'Admin login with email/password' })
-  @ApiResponse({ status: 200, description: 'Admin logged in successfully' })
-  async adminLogin(@Body() { email, password }: AdminLoginDto) {
-    return this.authService.adminLogin(email, password);
+async adminLogin(@Body() AdminLoginDto: AdminLoginDto) {
+  try {
+    return await this.authService.adminLogin(AdminLoginDto.email, AdminLoginDto.password);
+  } catch (error) {
+    console.error('Error in adminLogin:', error);
+    throw error;
   }
+}
+
 }
