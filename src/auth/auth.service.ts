@@ -17,7 +17,7 @@ export class AuthService {
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
 
     let user = await this.usersService.findByPhone(phone);
-    
+
     if (!user) {
       user = await this.usersService.create({
         phone,
@@ -40,16 +40,16 @@ export class AuthService {
 
   async verifyOtp(phone: string, otp: string) {
     const user = await this.usersService.findByPhone(phone);
-    
+
     if (!user || user.otp !== otp || new Date() > user.otpExpiry) {
       throw new Error('Invalid OTP');
     }
 
     await this.usersService.clearOtp(user.id);
 
-    const payload = { 
-      phone: user.phone, 
-      sub: user.id, 
+    const payload = {
+      phone: user.phone,
+      sub: user.id,
       role: user.role,
       deviceUrl: user.deviceUrl,
     };
@@ -65,21 +65,20 @@ export class AuthService {
     };
   }
 
-
   async adminLogin(email: string, password: string) {
     //  console.log(`Attempting admin login for: ${email}`);
     const user = await this.usersService.validateAdmin(email, password);
     if (!user) {
-        console.log('Login failed - invalid credentials');
+      console.log('Login failed - invalid credentials');
       throw new Error('Invalid credentials');
     }
-  // console.log('Login successful for admin:', email);
-    const payload = { 
-      email: user.email, 
-      sub: user.id, 
+    // console.log('Login successful for admin:', email);
+    const payload = {
+      email: user.email,
+      sub: user.id,
       role: user.role,
     };
-    
+
     return {
       access_token: this.jwtService.sign(payload),
       user: {

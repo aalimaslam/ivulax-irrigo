@@ -9,20 +9,21 @@ import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        secret: config.get('JWT_ACCESS_SECRET'),
+        secret: config.get<string>('JWT_ACCESS_SECRET') || 'aalimAccessSecret',
         signOptions: {
-          expiresIn: config.get('JWT_ACCESS_EXPIRES_IN') || '365d',
+          expiresIn: config.get<string>('JWT_ACCESS_EXPIRES_IN') || '365d',
         },
       }),
-      inject: [ConfigService],
     }),
     forwardRef(() => UsersModule),
   ],
-   controllers: [AuthController],
+  controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })

@@ -30,13 +30,15 @@ export class AuthController {
   //   return this.authService.adminLogin(email, password);
   // }
   @Post('admin/login')
-async adminLogin(@Body() AdminLoginDto: AdminLoginDto) {
-  try {
-    return await this.authService.adminLogin(AdminLoginDto.email, AdminLoginDto.password);
-  } catch (error) {
-    console.error('Error in adminLogin:', error);
-    throw error;
+  async adminLogin(@Body() AdminLoginDto: AdminLoginDto) {
+    try {
+      return await this.authService.adminLogin(
+        AdminLoginDto.email,
+        AdminLoginDto.password,
+      );
+    } catch (error) {
+      console.error('Error in adminLogin:', error);
+      throw error;
+    }
   }
-}
-
 }

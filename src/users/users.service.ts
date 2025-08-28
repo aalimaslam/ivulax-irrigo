@@ -25,7 +25,9 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async createUserWithEmailPassword(createUserDto: CreateUserDto): Promise<User> {
+  async createUserWithEmailPassword(
+    createUserDto: CreateUserDto,
+  ): Promise<User> {
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }
@@ -42,8 +44,6 @@ export class UsersService {
     await this.usersRepository.update(id, updateProfileDto);
     return this.usersRepository.findOneBy({ id });
   }
-
-
 
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
@@ -63,7 +63,8 @@ export class UsersService {
       where: { email, role: UserRole.ADMIN },
       select: ['id', 'email', 'password', 'role'],
     });
-    if (user && await bcrypt.compare(password, user.password)) {
+
+    if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
     return null;
@@ -72,18 +73,20 @@ export class UsersService {
   async seedAdmin(email: string, plainPassword: string) {
     let admin = await this.usersRepository.findOne({ where: { email } });
 
+    const pass = await bcrypt.hash(plainPassword, 10);
+
     if (!admin) {
       admin = this.usersRepository.create({
         name: 'Super Admin',
         email,
-        password: plainPassword,
+        password: pass,
         role: UserRole.ADMIN,
       });
     } else {
-      admin.password = plainPassword;
+      admin.password = pass;
       admin.role = UserRole.ADMIN;
     }
-    
+
     await this.usersRepository.save(admin);
     console.log('Admin account processed:', email);
   }
