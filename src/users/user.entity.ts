@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 
 import * as bcrypt from 'bcryptjs';
 import { UserSubscription } from '../user-subscriptions/user-subscription.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { IrrigationSchedule } from '../irrigation/irrigation.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -52,4 +53,10 @@ export class User {
 
   @OneToMany(() => UserSubscription, (userSubscription) => userSubscription.user)
   subscriptions: UserSubscription[];
+
+  @OneToMany(
+    () => IrrigationSchedule,
+    (irrigationSchedule) => irrigationSchedule.user,
+  )
+  irrigationSchedules: IrrigationSchedule[];
 }

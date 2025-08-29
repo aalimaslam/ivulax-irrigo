@@ -10,6 +10,8 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { UserSubscriptionsModule } from './user-subscriptions/user-subscriptions.module';
 import { PaymentsModule } from './payments/payments.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { IrrigationModule } from './irrigation/irrigation.module';
+import { TasksModule } from './tasks/tasks.module';
 
 // @Module({
 //   imports: [CoreModule, InfraModule, AuthModule, UsersModule],
@@ -32,6 +34,8 @@ import { TransactionsModule } from './transactions/transactions.module';
     UserSubscriptionsModule,
     PaymentsModule,
     TransactionsModule,
+    IrrigationModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
