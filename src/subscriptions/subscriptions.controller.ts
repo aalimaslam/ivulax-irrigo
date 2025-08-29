@@ -29,8 +29,8 @@ export class SubscriptionsController {
 
   @Post()
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  // @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Create a new subscription' })
   @ApiResponse({
     status: 201,
@@ -58,8 +58,7 @@ export class SubscriptionsController {
 
   @Patch(':id')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Update a subscription' })
   @ApiResponse({
     status: 200,
@@ -75,8 +74,7 @@ export class SubscriptionsController {
 
   @Delete(':id')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Delete a subscription' })
   @ApiResponse({
     status: 200,
