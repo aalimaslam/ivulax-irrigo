@@ -11,6 +11,7 @@ import { UserSubscriptionsModule } from './user-subscriptions/user-subscriptions
 import { PaymentsModule } from './payments/payments.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { IrrigationModule } from './irrigation/irrigation.module';
+import { TasksModule } from './tasks/tasks.module';
 
 // @Module({
 //   imports: [CoreModule, InfraModule, AuthModule, UsersModule],
@@ -34,6 +35,7 @@ import { IrrigationModule } from './irrigation/irrigation.module';
     PaymentsModule,
     TransactionsModule,
     IrrigationModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
