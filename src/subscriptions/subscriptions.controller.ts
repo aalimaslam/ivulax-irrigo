@@ -22,13 +22,14 @@ import { AdminGuard } from '../auth/guards/admin.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('subscriptions')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+
 @Controller('subscriptions')
 export class SubscriptionsController {
   constructor(private readonly subscriptionsService: SubscriptionsService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Create a new subscription' })
   @ApiResponse({
@@ -56,6 +57,8 @@ export class SubscriptionsController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Update a subscription' })
   @ApiResponse({
@@ -71,6 +74,8 @@ export class SubscriptionsController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Delete a subscription' })
   @ApiResponse({

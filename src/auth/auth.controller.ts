@@ -12,15 +12,15 @@ export class AuthController {
   @Post('request-otp')
   @ApiOperation({ summary: 'Request OTP for farmer login' })
   @ApiResponse({ status: 200, description: 'OTP sent successfully' })
-  async requestOtp(@Body() { phone, deviceUrl }: PhoneLoginDto) {
-    return this.authService.sendOtp(phone, deviceUrl);
+  async requestOtp(@Body() body: PhoneLoginDto) {
+    return this.authService.sendOtp(body.phone, body.deviceUrl);
   }
 
   @Post('verify-otp')
-  @ApiOperation({ summary: 'Verify OTP for farmer login' })
+  @ApiOperation({ summary: 'Verify OTP for farmer login'})
   @ApiResponse({ status: 200, description: 'OTP verified, returns JWT token' })
-  async verifyOtp(@Body() { phone, otp }: VerifyOtpDto) {
-    return this.authService.verifyOtp(phone, otp);
+  async verifyOtp(@Body() body: VerifyOtpDto) {
+    return this.authService.verifyOtp(body.phone, body.otp );
   }
 
   // @Post('admin/login')
